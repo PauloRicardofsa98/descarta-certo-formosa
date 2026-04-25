@@ -1,5 +1,5 @@
-export function gerarSlug(texto: string): string {
-  return texto
+export function generateSlug(text: string): string {
+  return text
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase()

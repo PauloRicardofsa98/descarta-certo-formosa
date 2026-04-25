@@ -8,67 +8,67 @@ datasource db {
 }
 
 enum Status {
-  ATIVO
-  INATIVO
+  ACTIVE
+  INACTIVE
 }
 
 model Admin {
   id           String   @id @default(cuid())
   email        String   @unique
-  senhaHash    String
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("admins")
 }
 
-model TipoDeResiduo {
-  id                String   @id @default(cuid())
-  nome              String   @unique
-  slug              String   @unique
-  descricao         String?
-  instrucoesPreparo String?
-  sinonimos         String?
-  icone             String?
-  ordem             Int      @default(0)
-  criadoEm          DateTime @default(now())
-  atualizadoEm      DateTime @updatedAt
+model WasteType {
+  id                      String   @id @default(cuid())
+  name                    String   @unique
+  slug                    String   @unique
+  description             String?
+  preparationInstructions String?
+  synonyms                String?
+  icon                    String?
+  order                   Int      @default(0)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
-  pontos PontoTipo[]
+  disposalPoints DisposalPointWasteType[]
 
-  @@map("tipos_de_residuo")
+  @@map("waste_types")
 }
 
-model PontoDeDescarte {
-  id           String   @id @default(cuid())
-  nome         String
-  slug         String   @unique
-  endereco     String
-  latitude     Float?
-  longitude    Float?
-  fotos        String[] @default([])
-  horarios     Json
-  telefone     String?
-  descricao    String?
-  site         String?
-  status       Status   @default(ATIVO)
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+model DisposalPoint {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  address     String
+  latitude    Float?
+  longitude   Float?
+  photos      String[] @default([])
+  hours       Json
+  phone       String?
+  description String?
+  website     String?
+  status      Status   @default(ACTIVE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  tipos PontoTipo[]
+  wasteTypes DisposalPointWasteType[]
 
   @@index([status])
-  @@map("pontos_de_descarte")
+  @@map("disposal_points")
 }
 
-model PontoTipo {
-  pontoId String
-  tipoId  String
+model DisposalPointWasteType {
+  disposalPointId String
+  wasteTypeId     String
 
-  ponto PontoDeDescarte @relation(fields: [pontoId], references: [id], onDelete: Cascade)
-  tipo  TipoDeResiduo   @relation(fields: [tipoId], references: [id], onDelete: Cascade)
+  disposalPoint DisposalPoint @relation(fields: [disposalPointId], references: [id], onDelete: Cascade)
+  wasteType     WasteType     @relation(fields: [wasteTypeId], references: [id], onDelete: Cascade)
 
-  @@id([pontoId, tipoId])
-  @@index([tipoId])
-  @@map("pontos_tipos")
+  @@id([disposalPointId, wasteTypeId])
+  @@index([wasteTypeId])
+  @@map("disposal_point_waste_types")
 }

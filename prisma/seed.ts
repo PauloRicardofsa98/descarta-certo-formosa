@@ -1,227 +1,226 @@
 import bcrypt from "bcryptjs";
-import { gerarSlug } from "../app/_lib/slug";
-import { prisma } from "@/app/_lib/db";
 
-type TipoSeed = {
-  nome: string;
-  descricao: string;
-  instrucoesPreparo: string;
-  sinonimos: string;
+import { prisma } from "@/app/_lib/db";
+import { generateSlug } from "@/app/_lib/slug";
+
+type WasteTypeSeed = {
+  name: string;
+  description: string;
+  preparationInstructions: string;
+  synonyms: string;
 };
 
-const tipos: TipoSeed[] = [
+const wasteTypes: WasteTypeSeed[] = [
   {
-    nome: "Pilhas e baterias pequenas",
-    descricao:
+    name: "Pilhas e baterias pequenas",
+    description:
       "Pilhas alcalinas, recarregáveis e baterias de aparelhos pequenos.",
-    instrucoesPreparo:
+    preparationInstructions:
       "Armazene em recipiente seco; não fure nem amasse; entregue em pontos de logística reversa.",
-    sinonimos: "pilha, bateria, AA, AAA, palito, botão, recarregável",
+    synonyms: "pilha, bateria, AA, AAA, palito, botão, recarregável",
   },
   {
-    nome: "Lâmpadas",
-    descricao: "Fluorescentes, LED, halógenas e incandescentes.",
-    instrucoesPreparo:
+    name: "Lâmpadas",
+    description: "Fluorescentes, LED, halógenas e incandescentes.",
+    preparationInstructions:
       "Embale com papelão ou plástico-bolha para evitar quebra. Lâmpadas fluorescentes contêm mercúrio — nunca jogue no lixo comum.",
-    sinonimos: "lâmpada, fluorescente, LED, halógena, incandescente, bulbo",
+    synonyms: "lâmpada, fluorescente, LED, halógena, incandescente, bulbo",
   },
   {
-    nome: "Eletrônicos pequenos",
-    descricao:
+    name: "Eletrônicos pequenos",
+    description:
       "Celulares, controles, fones, mouses, teclados, carregadores e cabos.",
-    instrucoesPreparo:
+    preparationInstructions:
       "Apague dados pessoais antes de descartar. Remova baterias quando possível.",
-    sinonimos:
+    synonyms:
       "celular, smartphone, controle, fone, mouse, teclado, carregador, cabo, pen drive, eletrônico",
   },
   {
-    nome: "Eletrodomésticos",
-    descricao: "Linha branca (geladeira, fogão, máquina) e marrom (TV, som).",
-    instrucoesPreparo:
+    name: "Eletrodomésticos",
+    description: "Linha branca (geladeira, fogão, máquina) e marrom (TV, som).",
+    preparationInstructions:
       "Agende coleta com o ponto. Aparelhos com gás (geladeira, ar-condicionado) precisam de descarte especializado.",
-    sinonimos:
+    synonyms:
       "geladeira, freezer, fogão, micro-ondas, máquina de lavar, TV, ar-condicionado, eletrodoméstico",
   },
   {
-    nome: "Óleo de cozinha usado",
-    descricao: "Óleo vegetal usado em frituras.",
-    instrucoesPreparo:
+    name: "Óleo de cozinha usado",
+    description: "Óleo vegetal usado em frituras.",
+    preparationInstructions:
       "Armazene em garrafa PET fechada; evite contaminar com restos de comida ou água.",
-    sinonimos: "óleo, gordura, óleo vegetal, óleo de fritura",
+    synonyms: "óleo, gordura, óleo vegetal, óleo de fritura",
   },
   {
-    nome: "Medicamentos vencidos",
-    descricao: "Remédios fora da validade ou em desuso.",
-    instrucoesPreparo:
+    name: "Medicamentos vencidos",
+    description: "Remédios fora da validade ou em desuso.",
+    preparationInstructions:
       "Leve à farmácia parceira de logística reversa. Nunca descarte em pia, vaso ou lixo comum.",
-    sinonimos: "remédio, comprimido, xarope, pomada, antibiótico, medicamento",
+    synonyms: "remédio, comprimido, xarope, pomada, antibiótico, medicamento",
   },
   {
-    nome: "Papel e papelão",
-    descricao: "Material reciclável seco.",
-    instrucoesPreparo:
+    name: "Papel e papelão",
+    description: "Material reciclável seco.",
+    preparationInstructions:
       "Mantenha seco e limpo; desmonte caixas; remova fitas e plásticos.",
-    sinonimos: "papel, jornal, revista, caderno, caixa, papelão, cartolina",
+    synonyms: "papel, jornal, revista, caderno, caixa, papelão, cartolina",
   },
   {
-    nome: "Plástico",
-    descricao: "Embalagens, garrafas e utensílios plásticos.",
-    instrucoesPreparo:
+    name: "Plástico",
+    description: "Embalagens, garrafas e utensílios plásticos.",
+    preparationInstructions:
       "Lave rapidamente para remover restos; amasse garrafas para otimizar espaço.",
-    sinonimos: "garrafa PET, embalagem, sacola, copo, pote, tampinha, plástico",
+    synonyms: "garrafa PET, embalagem, sacola, copo, pote, tampinha, plástico",
   },
   {
-    nome: "Vidro",
-    descricao: "Garrafas, frascos e potes de vidro.",
-    instrucoesPreparo:
+    name: "Vidro",
+    description: "Garrafas, frascos e potes de vidro.",
+    preparationInstructions:
       'Lave; embale cacos em jornal ou caixa rígida com aviso "VIDRO" para proteger coletores.',
-    sinonimos: "garrafa, pote, frasco, copo de vidro, vidro",
+    synonyms: "garrafa, pote, frasco, copo de vidro, vidro",
   },
   {
-    nome: "Metal e alumínio",
-    descricao: "Latas, alumínio, ferro e cobre.",
-    instrucoesPreparo:
+    name: "Metal e alumínio",
+    description: "Latas, alumínio, ferro e cobre.",
+    preparationInstructions:
       "Lave; amasse latinhas; latas grandes podem ir inteiras.",
-    sinonimos: "lata, alumínio, cobre, ferro, latinha, metal",
+    synonyms: "lata, alumínio, cobre, ferro, latinha, metal",
   },
   {
-    nome: "Embalagens longa-vida (Tetra Pak)",
-    descricao: "Caixas cartonadas de leite, suco e similares.",
-    instrucoesPreparo: "Lave; achate; descarte com recicláveis.",
-    sinonimos:
+    name: "Embalagens longa-vida (Tetra Pak)",
+    description: "Caixas cartonadas de leite, suco e similares.",
+    preparationInstructions: "Lave; achate; descarte com recicláveis.",
+    synonyms:
       "caixa de leite, caixa de suco, embalagem cartonada, longa-vida, Tetra Pak",
   },
   {
-    nome: "Resíduos orgânicos",
-    descricao: "Restos de alimentos e cascas.",
-    instrucoesPreparo:
+    name: "Resíduos orgânicos",
+    description: "Restos de alimentos e cascas.",
+    preparationInstructions:
       "Separe do lixo seco; idealmente, composte em casa ou entregue em ponto de compostagem.",
-    sinonimos: "comida, casca, restos, sobra, alimento, orgânico",
+    synonyms: "comida, casca, restos, sobra, alimento, orgânico",
   },
   {
-    nome: "Podas e galhos",
-    descricao: "Resíduos vegetais de jardim.",
-    instrucoesPreparo:
+    name: "Podas e galhos",
+    description: "Resíduos vegetais de jardim.",
+    preparationInstructions:
       "Amarre em feixes pequenos; evite misturar com outros resíduos.",
-    sinonimos: "galho, mato, capim, jardim, folhagem, grama, poda",
+    synonyms: "galho, mato, capim, jardim, folhagem, grama, poda",
   },
   {
-    nome: "Entulho de construção",
-    descricao: "Restos de obras e reformas.",
-    instrucoesPreparo:
+    name: "Entulho de construção",
+    description: "Restos de obras e reformas.",
+    preparationInstructions:
       "Volumes grandes exigem caçamba; pequenos podem ir a ecopontos da cidade.",
-    sinonimos:
+    synonyms:
       "tijolo, cimento, concreto, gesso, argamassa, bloco, telha, entulho",
   },
   {
-    nome: "Móveis e colchões",
-    descricao: "Resíduos volumosos.",
-    instrucoesPreparo:
+    name: "Móveis e colchões",
+    description: "Resíduos volumosos.",
+    preparationInstructions:
       "Agende com o ponto que aceita volumosos; alguns programas reaproveitam o material.",
-    sinonimos: "sofá, colchão, cadeira, mesa, armário, móvel, volumoso",
+    synonyms: "sofá, colchão, cadeira, mesa, armário, móvel, volumoso",
   },
   {
-    nome: "Roupas, calçados e tecidos",
-    descricao: "Vestuário e itens têxteis em geral.",
-    instrucoesPreparo:
+    name: "Roupas, calçados e tecidos",
+    description: "Vestuário e itens têxteis em geral.",
+    preparationInstructions:
       "Lave; doe se ainda em uso; descarte como tecido se não-aproveitável.",
-    sinonimos: "roupa, sapato, tênis, cobertor, lençol, tecido, calçado",
+    synonyms: "roupa, sapato, tênis, cobertor, lençol, tecido, calçado",
   },
   {
-    nome: "Pneus",
-    descricao: "Pneus inservíveis.",
-    instrucoesPreparo:
+    name: "Pneus",
+    description: "Pneus inservíveis.",
+    preparationInstructions:
       "Empilhe; entregue em borracharias parceiras ou pontos de logística reversa.",
-    sinonimos: "pneu, pneu velho, câmara",
+    synonyms: "pneu, pneu velho, câmara",
   },
   {
-    nome: "Cápsulas de café e cartuchos de tinta",
-    descricao: "Itens com logística reversa específica do fabricante.",
-    instrucoesPreparo:
+    name: "Cápsulas de café e cartuchos de tinta",
+    description: "Itens com logística reversa específica do fabricante.",
+    preparationInstructions:
       "Cápsulas: armazene em saco. Cartuchos: leve a lojas ou pontos da fabricante.",
-    sinonimos:
+    synonyms:
       "cápsula, Nespresso, Dolce Gusto, cartucho, toner, tinta de impressora",
   },
   {
-    nome: "Tintas, solventes e produtos químicos",
-    descricao: "Resíduos químicos domésticos.",
-    instrucoesPreparo:
+    name: "Tintas, solventes e produtos químicos",
+    description: "Resíduos químicos domésticos.",
+    preparationInstructions:
       "Nunca despeje em pia ou solo; mantenha em embalagem original; entregue em ponto especializado.",
-    sinonimos: "tinta, thinner, removedor, solvente, verniz, esmalte, químico",
+    synonyms: "tinta, thinner, removedor, solvente, verniz, esmalte, químico",
   },
 ];
 
 async function seedAdmin() {
   const email = process.env.ADMIN_EMAIL;
-  const senha = process.env.ADMIN_PASSWORD;
+  const password = process.env.ADMIN_PASSWORD;
 
-  if (!email || !senha) {
+  if (!email || !password) {
     throw new Error(
       "ADMIN_EMAIL e ADMIN_PASSWORD precisam estar definidos no .env antes de rodar o seed.",
     );
   }
 
-  const senhaHash = await bcrypt.hash(senha, 10);
+  const passwordHash = await bcrypt.hash(password, 10);
 
   await prisma.admin.upsert({
     where: { email },
-    update: { senhaHash },
-    create: { email, senhaHash },
+    update: { passwordHash },
+    create: { email, passwordHash },
   });
 
   console.log(`✓ Admin garantido: ${email}`);
 }
 
-async function seedTipos() {
-  let inseridos = 0;
-  let atualizados = 0;
+async function seedWasteTypes() {
+  let inserted = 0;
+  let updated = 0;
 
-  for (const [indice, tipo] of tipos.entries()) {
-    const slug = gerarSlug(tipo.nome);
-    const ordem = (indice + 1) * 10;
+  for (const [index, wasteType] of wasteTypes.entries()) {
+    const slug = generateSlug(wasteType.name);
+    const order = (index + 1) * 10;
 
-    const existente = await prisma.tipoDeResiduo.findUnique({
-      where: { slug },
-    });
+    const existing = await prisma.wasteType.findUnique({ where: { slug } });
 
-    await prisma.tipoDeResiduo.upsert({
+    await prisma.wasteType.upsert({
       where: { slug },
       update: {
-        nome: tipo.nome,
-        descricao: tipo.descricao,
-        instrucoesPreparo: tipo.instrucoesPreparo,
-        sinonimos: tipo.sinonimos,
-        ordem,
+        name: wasteType.name,
+        description: wasteType.description,
+        preparationInstructions: wasteType.preparationInstructions,
+        synonyms: wasteType.synonyms,
+        order,
       },
       create: {
-        nome: tipo.nome,
+        name: wasteType.name,
         slug,
-        descricao: tipo.descricao,
-        instrucoesPreparo: tipo.instrucoesPreparo,
-        sinonimos: tipo.sinonimos,
-        ordem,
+        description: wasteType.description,
+        preparationInstructions: wasteType.preparationInstructions,
+        synonyms: wasteType.synonyms,
+        order,
       },
     });
 
-    if (existente) atualizados++;
-    else inseridos++;
+    if (existing) updated++;
+    else inserted++;
   }
 
   console.log(
-    `✓ Tipos de resíduo: ${inseridos} inseridos, ${atualizados} atualizados`,
+    `✓ Tipos de resíduo: ${inserted} inseridos, ${updated} atualizados`,
   );
 }
 
 async function main() {
   console.log("Iniciando seed...");
   await seedAdmin();
-  await seedTipos();
+  await seedWasteTypes();
   console.log("Seed concluído.");
 }
 
 main()
-  .catch((erro) => {
-    console.error(erro);
+  .catch((error) => {
+    console.error(error);
     process.exit(1);
   })
   .finally(async () => {
