@@ -107,6 +107,7 @@ export function WasteTypesList({ wasteTypes }: Props) {
                             aria-label={`Editar ${wasteType.name}`}
                           />
                         }
+                        nativeButton={false}
                         variant="ghost"
                         size="sm"
                       >

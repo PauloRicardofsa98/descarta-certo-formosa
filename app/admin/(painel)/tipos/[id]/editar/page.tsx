@@ -39,6 +39,7 @@ export default async function EditWasteTypePage({
       <div className="flex flex-col gap-2">
         <Button
           render={<Link href="/admin/tipos" />}
+          nativeButton={false}
           variant="ghost"
           size="sm"
           className="self-start text-muted-foreground"

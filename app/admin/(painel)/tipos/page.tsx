@@ -33,7 +33,11 @@ export default async function WasteTypesPage() {
             Catálogo dos tipos que podem ser cadastrados em pontos de descarte.
           </p>
         </div>
-        <Button render={<Link href="/admin/tipos/novo" />} size="lg">
+        <Button
+          render={<Link href="/admin/tipos/novo" />}
+          nativeButton={false}
+          size="lg"
+        >
           Novo tipo
         </Button>
       </div>
