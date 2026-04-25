@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: descarta-certo-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: descarta
+      POSTGRES_PASSWORD: descarta
+      POSTGRES_DB: descarta_certo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U descarta -d descarta_certo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
+    name: descarta-certo-postgres-data

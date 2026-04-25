@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+docs/
+
+# instruções locais para agentes de IA (não versionar — AGENTS.md é o canônico)
+.claude/
+CLAUDE.md
+
+app/_generated/

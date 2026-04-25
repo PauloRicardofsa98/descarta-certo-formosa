@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/_generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Status {
+  ATIVO
+  INATIVO
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  senhaHash    String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model TipoDeResiduo {
+  id                String   @id @default(cuid())
+  nome              String   @unique
+  slug              String   @unique
+  descricao         String?
+  instrucoesPreparo String?
+  sinonimos         String?
+  icone             String?
+  ordem             Int      @default(0)
+  criadoEm          DateTime @default(now())
+  atualizadoEm      DateTime @updatedAt
+
+  pontos PontoTipo[]
+
+  @@map("tipos_de_residuo")
+}
+
+model PontoDeDescarte {
+  id           String   @id @default(cuid())
+  nome         String
+  slug         String   @unique
+  endereco     String
+  latitude     Float?
+  longitude    Float?
+  fotos        String[] @default([])
+  horarios     Json
+  telefone     String?
+  descricao    String?
+  site         String?
+  status       Status   @default(ATIVO)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  tipos PontoTipo[]
+
+  @@index([status])
+  @@map("pontos_de_descarte")
+}
+
+model PontoTipo {
+  pontoId String
+  tipoId  String
+
+  ponto PontoDeDescarte @relation(fields: [pontoId], references: [id], onDelete: Cascade)
+  tipo  TipoDeResiduo   @relation(fields: [tipoId], references: [id], onDelete: Cascade)
+
+  @@id([pontoId, tipoId])
+  @@index([tipoId])
+  @@map("pontos_tipos")
+}
