@@ -47,3 +47,6 @@ docs/
 CLAUDE.md
 
 app/_generated/
+
+# seed local de desenvolvimento (não versionar)
+prisma/seed-dev.ts
