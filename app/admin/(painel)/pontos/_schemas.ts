@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { dayKeys, dayLabels, type DayKey, type Hours } from "@/app/_lib/hours";
+
 const timeRegex = /^\d{2}:\d{2}$/;
 
 const intervalSchema = z.object({
@@ -33,27 +35,7 @@ export const dayHoursSchema = z
     });
   });
 
-export const dayKeys = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-] as const;
-
-export type DayKey = (typeof dayKeys)[number];
-
-export const dayLabels: Record<DayKey, string> = {
-  monday: "Segunda",
-  tuesday: "Terça",
-  wednesday: "Quarta",
-  thursday: "Quinta",
-  friday: "Sexta",
-  saturday: "Sábado",
-  sunday: "Domingo",
-};
+export { dayKeys, dayLabels, type DayKey };
 
 export const hoursSchema = z.object({
   monday: dayHoursSchema,
@@ -65,7 +47,7 @@ export const hoursSchema = z.object({
   sunday: dayHoursSchema,
 });
 
-export type Hours = z.infer<typeof hoursSchema>;
+export type { Hours };
 
 export const businessDay = {
   open: true,
