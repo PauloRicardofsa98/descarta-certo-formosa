@@ -26,12 +26,13 @@ import {
   type DisposalPointInput,
 } from "../_schemas";
 
-import { HoursInput } from "./hours-input";
-import { PhotosInput } from "./photos-input";
 import {
   WasteTypesMultiSelect,
   type WasteTypeOption,
-} from "./waste-types-multi-select";
+} from "@/app/_components/waste-types-multi-select";
+
+import { HoursInput } from "./hours-input";
+import { PhotosInput } from "./photos-input";
 
 type Mode = { kind: "create" } | { kind: "edit"; id: string };
 

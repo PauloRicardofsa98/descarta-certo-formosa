@@ -104,6 +104,54 @@
   --sidebar-ring: oklch(0.4 0.1 155);
 }
 
+@layer components {
+  .cn-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 14rem;
+    font-family: var(--font-sans);
+  }
+  .cn-popup-title {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    color: var(--foreground);
+  }
+  .cn-popup-address {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    line-height: 1.4;
+  }
+  .cn-popup-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .cn-popup-tag {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  .cn-popup-more {
+    background: var(--muted);
+    color: var(--muted-foreground);
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  .cn-popup-link {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--primary);
+  }
+  .cn-popup-link:hover {
+    text-decoration: underline;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
