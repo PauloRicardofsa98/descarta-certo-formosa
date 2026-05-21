@@ -12,11 +12,19 @@ import { prisma } from "@/app/_lib/db";
 export const metadata = { title: "Painel" };
 
 export default async function DashboardPage() {
-  const [activePoints, inactivePoints, totalWasteTypes] = await Promise.all([
-    prisma.disposalPoint.count({ where: { status: "ACTIVE" } }),
-    prisma.disposalPoint.count({ where: { status: "INACTIVE" } }),
-    prisma.wasteType.count(),
-  ]);
+  const last30dStart = new Date();
+  last30dStart.setUTCDate(last30dStart.getUTCDate() - 30);
+  last30dStart.setUTCHours(0, 0, 0, 0);
+
+  const [activePoints, inactivePoints, totalWasteTypes, views30d] =
+    await Promise.all([
+      prisma.disposalPoint.count({ where: { status: "ACTIVE" } }),
+      prisma.disposalPoint.count({ where: { status: "INACTIVE" } }),
+      prisma.wasteType.count(),
+      prisma.pageView.count({
+        where: { isBot: false, createdAt: { gte: last30dStart } },
+      }),
+    ]);
 
   const cards = [
     {
@@ -37,6 +45,12 @@ export default async function DashboardPage() {
       description: "Itens cadastrados no catálogo.",
       href: "/admin/tipos",
     },
+    {
+      title: "Visualizações (30d)",
+      value: views30d,
+      description: "Acessos reais ao site público.",
+      href: "/admin/metricas",
+    },
   ];
 
   return (
@@ -49,7 +63,7 @@ export default async function DashboardPage() {
           Resumo do conteúdo cadastrado na plataforma.
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <Link
             key={card.title}

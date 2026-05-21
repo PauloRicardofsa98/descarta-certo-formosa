@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
 
 import {
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default async function MapaPage() {
+  await trackView({ path: "/mapa" });
+
   const [points, wasteTypes] = await Promise.all([
     prisma.disposalPoint.findMany({
       where: { status: "ACTIVE" },

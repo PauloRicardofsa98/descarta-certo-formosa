@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DisposalPointCard } from "@/app/_components/disposal-point-card";
 import { Button } from "@/app/_components/ui/button";
 import { WasteTypeCard } from "@/app/_components/waste-type-card";
+import { trackSearch, trackView } from "@/app/_lib/analytics";
 import { searchAll } from "@/app/_lib/search";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +40,11 @@ export default async function BuscaPage({
     ? await searchAll(q)
     : { query: "", wasteTypes: [], points: [] };
   const totalResults = results.wasteTypes.length + results.points.length;
+
+  await trackView({ path: "/busca" });
+  if (q) {
+    await trackSearch({ term: q, resultsCount: totalResults });
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">

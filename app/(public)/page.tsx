@@ -6,6 +6,7 @@ import {
   WasteTypeCard,
   type WasteTypeCardData,
 } from "@/app/_components/waste-type-card";
+import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
 
 export default async function HomePage() {
@@ -13,6 +14,8 @@ export default async function HomePage() {
     orderBy: [{ order: "asc" }, { name: "asc" }],
     select: { slug: true, name: true, description: true, icon: true },
   });
+
+  await trackView({ path: "/" });
 
   return (
     <>

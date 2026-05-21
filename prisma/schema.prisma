@@ -72,3 +72,40 @@ model DisposalPointWasteType {
   @@index([wasteTypeId])
   @@map("disposal_point_waste_types")
 }
+
+model PageView {
+  id          String   @id @default(cuid())
+  path        String
+  wasteTypeId String?
+  pointId     String?
+
+  sessionHash String
+  ipHash      String
+  userAgent   String?
+  isBot       Boolean  @default(false)
+
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+  @@index([wasteTypeId])
+  @@index([pointId])
+  @@index([isBot, createdAt])
+  @@map("page_views")
+}
+
+model SearchEvent {
+  id           String   @id @default(cuid())
+  term         String
+  resultsCount Int
+  sessionHash  String
+  ipHash       String
+  isBot        Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([term])
+  @@index([isBot, createdAt])
+  @@map("search_events")
+}

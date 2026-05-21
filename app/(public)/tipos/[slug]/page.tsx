@@ -8,6 +8,7 @@ import {
   DisposalPointCard,
   type DisposalPointCardData,
 } from "@/app/_components/disposal-point-card";
+import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
 
 type Params = { slug: string };
@@ -54,6 +55,11 @@ export default async function WasteTypePage({
   if (!wasteType) {
     notFound();
   }
+
+  await trackView({
+    path: `/tipos/${slug}`,
+    wasteTypeId: wasteType.id,
+  });
 
   const points = await prisma.disposalPoint.findMany({
     where: {

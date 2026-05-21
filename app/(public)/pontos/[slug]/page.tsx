@@ -8,6 +8,7 @@ import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import { HoursDisplay } from "@/app/_components/hours-display";
 import { PointMiniMap } from "@/app/_components/point-mini-map";
+import { trackView } from "@/app/_lib/analytics";
 import { type Hours } from "@/app/_lib/hours";
 import { prisma } from "@/app/_lib/db";
 
@@ -75,6 +76,11 @@ export default async function DisposalPointPage({
   if (!point || point.status === "INACTIVE") {
     notFound();
   }
+
+  await trackView({
+    path: `/pontos/${slug}`,
+    pointId: point.id,
+  });
 
   const hours = point.hours as Hours;
   const directionsUrl = buildDirectionsUrl(point);

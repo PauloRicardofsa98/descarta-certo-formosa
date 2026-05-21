@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { getSession } from "@/app/_lib/auth";
 
+import { AdminNav } from "./_components/admin-nav";
 import { LogoutButton } from "./_components/logout-button";
 
 export default async function PainelLayout({
@@ -35,6 +36,7 @@ export default async function PainelLayout({
             <LogoutButton />
           </div>
         </div>
+        <AdminNav />
       </header>
       <main className="flex-1 bg-muted/30">{children}</main>
     </div>
