@@ -37,8 +37,6 @@ async function resolveContext() {
   const ip = firstIp(forwarded);
   const ipHash = sha256(`${ip}:${dailySalt()}`);
 
-  // Cookie é setado pelo proxy.ts (middleware). Em caso raro de ausência
-  // (ex.: primeiro request antes do middleware concluir), derivamos do IP+UA.
   const anonId =
     cookieStore.get(ANON_COOKIE)?.value ??
     sha256(`${ip}:${userAgent ?? "unknown"}`);
@@ -74,7 +72,7 @@ export async function trackView(input: {
       },
     });
   } catch {
-    // analytics nunca pode derrubar a página
+    // o rastreamento não deve interromper a navegação
   }
 }
 
@@ -96,6 +94,6 @@ export async function trackSearch(input: {
       },
     });
   } catch {
-    // idem
+    // o rastreamento não deve interromper a navegação
   }
 }
