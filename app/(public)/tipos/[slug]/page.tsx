@@ -1,4 +1,4 @@
-import { ArrowLeft, Lightbulb, MapPin, Recycle } from "lucide-react";
+import { ArrowLeft, Lightbulb, MapPin, Phone, Recycle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,6 +10,7 @@ import {
 } from "@/app/_components/disposal-point-card";
 import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
+import { PREFEITURA } from "@/app/_lib/prefeitura";
 
 type Params = { slug: string };
 
@@ -192,13 +193,40 @@ export default async function WasteTypePage({
         </div>
 
         {cards.length === 0 ? (
-          <div className="mt-6 rounded-xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
-            <p className="font-medium text-foreground">
-              Nenhum ponto cadastrado ainda.
-            </p>
-            <p className="mt-1">
-              Volte em breve. Estamos coletando informações junto à comunidade.
-            </p>
+          <div className="mt-6 flex flex-col items-center gap-5 rounded-xl border border-dashed border-border bg-muted/30 p-8 text-center">
+            <div>
+              <p className="font-medium text-foreground">
+                Ainda não há um local de descarte cadastrado para este resíduo.
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Fale com a {PREFEITURA.name} para orientação sobre onde
+                descartar corretamente.
+              </p>
+            </div>
+            <div className="flex w-full flex-col items-center gap-2 sm:w-auto sm:flex-row">
+              <Button
+                render={
+                  <a href={`tel:${PREFEITURA.phone.replace(/\D/g, "")}`} />
+                }
+                nativeButton={false}
+                size="lg"
+                className="h-11 w-full sm:w-auto"
+              >
+                <Phone aria-hidden className="size-4" />
+                {PREFEITURA.phone}
+              </Button>
+              <Button
+                render={
+                  <a href={`tel:${PREFEITURA.tollFree.replace(/\D/g, "")}`} />
+                }
+                nativeButton={false}
+                variant="outline"
+                size="lg"
+                className="h-11 w-full sm:w-auto"
+              >
+                {PREFEITURA.tollFree}
+              </Button>
+            </div>
           </div>
         ) : (
           <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">

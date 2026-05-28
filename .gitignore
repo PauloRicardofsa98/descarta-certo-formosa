@@ -50,3 +50,4 @@ app/_generated/
 
 # seed local de desenvolvimento (não versionar)
 prisma/seed-dev.ts
+prisma/seed-formosa.ts
