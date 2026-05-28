@@ -1,4 +1,4 @@
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, Navigation } from "lucide-react";
 import Link from "next/link";
 
 import { Badge } from "@/app/_components/ui/badge";
@@ -14,12 +14,14 @@ export type DisposalPointCardData = {
 type Props = {
   point: DisposalPointCardData;
   highlightedTypeSlug?: string;
+  distanceLabel?: string;
   className?: string;
 };
 
 export function DisposalPointCard({
   point,
   highlightedTypeSlug,
+  distanceLabel,
   className,
 }: Props) {
   return (
@@ -42,6 +44,12 @@ export function DisposalPointCard({
           <MapPin aria-hidden className="mt-0.5 size-4 shrink-0" />
           <span>{point.address}</span>
         </p>
+        {distanceLabel && (
+          <p className="inline-flex items-center gap-1 text-sm font-medium text-primary">
+            <Navigation aria-hidden className="size-4 shrink-0" />
+            {distanceLabel}
+          </p>
+        )}
       </div>
 
       {point.wasteTypes.length > 0 && (

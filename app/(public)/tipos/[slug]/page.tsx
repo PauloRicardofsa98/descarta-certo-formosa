@@ -1,16 +1,14 @@
-import { ArrowLeft, Lightbulb, MapPin, Phone, Recycle } from "lucide-react";
+import { ArrowLeft, Lightbulb, Phone, Recycle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Button } from "@/app/_components/ui/button";
-import {
-  DisposalPointCard,
-  type DisposalPointCardData,
-} from "@/app/_components/disposal-point-card";
 import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
 import { PREFEITURA } from "@/app/_lib/prefeitura";
+
+import { TypePointsMap, type TypeMapPoint } from "./_components/type-points-map";
 
 type Params = { slug: string };
 
@@ -72,16 +70,20 @@ export default async function WasteTypePage({
       slug: true,
       name: true,
       address: true,
+      latitude: true,
+      longitude: true,
       wasteTypes: {
         select: { wasteType: { select: { name: true, slug: true } } },
       },
     },
   });
 
-  const cards: DisposalPointCardData[] = points.map((point) => ({
+  const cards: TypeMapPoint[] = points.map((point) => ({
     slug: point.slug,
     name: point.name,
     address: point.address,
+    latitude: point.latitude,
+    longitude: point.longitude,
     wasteTypes: point.wasteTypes.map((relation) => ({
       name: relation.wasteType.name,
       slug: relation.wasteType.slug,
@@ -165,31 +167,18 @@ export default async function WasteTypePage({
       )}
 
       <section aria-labelledby="points-heading" className="mt-10">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2
-              id="points-heading"
-              className="font-heading text-2xl font-bold tracking-tight sm:text-3xl"
-            >
-              Onde levar
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {cards.length === 0
-                ? "Ainda não temos pontos cadastrados para este tipo."
-                : `${cards.length} ${cards.length === 1 ? "ponto disponível" : "pontos disponíveis"} em Formosa-GO.`}
-            </p>
-          </div>
-          {cards.length > 0 && (
-            <Button
-              render={<Link href={`/mapa?tipo=${slug}`} />}
-              nativeButton={false}
-              variant="outline"
-              size="sm"
-            >
-              <MapPin aria-hidden className="size-4" />
-              Ver no mapa
-            </Button>
-          )}
+        <div>
+          <h2
+            id="points-heading"
+            className="font-heading text-2xl font-bold tracking-tight sm:text-3xl"
+          >
+            Onde levar
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {cards.length === 0
+              ? "Ainda não temos pontos cadastrados para este tipo."
+              : `${cards.length} ${cards.length === 1 ? "ponto disponível" : "pontos disponíveis"} em Formosa-GO.`}
+          </p>
         </div>
 
         {cards.length === 0 ? (
@@ -229,16 +218,7 @@ export default async function WasteTypePage({
             </div>
           </div>
         ) : (
-          <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {cards.map((point) => (
-              <li key={point.slug}>
-                <DisposalPointCard
-                  point={point}
-                  highlightedTypeSlug={slug}
-                />
-              </li>
-            ))}
-          </ul>
+          <TypePointsMap points={cards} highlightedTypeSlug={slug} />
         )}
       </section>
     </div>
