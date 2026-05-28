@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { trackView } from "@/app/_lib/analytics";
 import { prisma } from "@/app/_lib/db";
@@ -58,7 +59,15 @@ export default async function MapaPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-8rem)] flex-col">
-      <MapaPageClient points={mapped} wasteTypes={wasteTypes} />
+      <Suspense
+        fallback={
+          <div className="flex flex-1 items-center justify-center p-8 text-sm text-muted-foreground">
+            Carregando mapa…
+          </div>
+        }
+      >
+        <MapaPageClient points={mapped} wasteTypes={wasteTypes} />
+      </Suspense>
     </div>
   );
 }
