@@ -16,28 +16,28 @@ export default async function DashboardPage() {
   last30dStart.setUTCDate(last30dStart.getUTCDate() - 30);
   last30dStart.setUTCHours(0, 0, 0, 0);
 
-  const [activePoints, inactivePoints, totalWasteTypes, views30d] =
+  const [activePoints, totalWasteTypes, views30d, pendingReports] =
     await Promise.all([
       prisma.disposalPoint.count({ where: { status: "ACTIVE" } }),
-      prisma.disposalPoint.count({ where: { status: "INACTIVE" } }),
       prisma.wasteType.count(),
       prisma.pageView.count({
         where: { isBot: false, createdAt: { gte: last30dStart } },
       }),
+      prisma.irregularDisposalReport.count({ where: { status: "PENDING" } }),
     ]);
 
   const cards = [
+    {
+      title: "Denúncias pendentes",
+      value: pendingReports,
+      description: "Aguardando avaliação.",
+      href: "/admin/denuncias?status=PENDING",
+    },
     {
       title: "Pontos ativos",
       value: activePoints,
       description: "Visíveis no site público.",
       href: "/admin/pontos",
-    },
-    {
-      title: "Pontos inativos",
-      value: inactivePoints,
-      description: "Ocultos do público.",
-      href: "/admin/pontos?status=INACTIVE",
     },
     {
       title: "Tipos de resíduo",

@@ -15,12 +15,18 @@ export default function PublicLayout({
           >
             Descarta Certo Formosa
           </Link>
-          <nav aria-label="Navegação principal" className="flex items-center gap-4 text-sm">
+          <nav aria-label="Navegação principal" className="flex items-center gap-2 text-sm sm:gap-4">
             <Link
               href="/mapa"
               className="rounded-md px-2 py-1 text-muted-foreground transition-colors hover:text-foreground focus-visible:bg-muted focus-visible:text-foreground"
             >
               Mapa
+            </Link>
+            <Link
+              href="/denunciar"
+              className="rounded-md bg-primary px-3 py-1.5 font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Denunciar
             </Link>
           </nav>
         </div>

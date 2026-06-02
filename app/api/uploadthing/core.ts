@@ -19,6 +19,14 @@ export const uploadRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       return { adminId: metadata.adminId, url: file.ufsUrl };
     }),
+
+  reportPhotos: f({
+    image: { maxFileSize: "8MB", maxFileCount: 3 },
+  })
+    .middleware(async () => ({}))
+    .onUploadComplete(async ({ file }) => {
+      return { url: file.ufsUrl };
+    }),
 } satisfies FileRouter;
 
 export type UploadRouter = typeof uploadRouter;

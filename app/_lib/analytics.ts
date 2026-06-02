@@ -51,6 +51,15 @@ function shouldSkip(path: string): boolean {
   return path.startsWith("/admin") || path.startsWith("/api");
 }
 
+export async function getRequestFingerprint(): Promise<{
+  ipHash: string;
+  sessionHash: string;
+  isBot: boolean;
+}> {
+  const ctx = await resolveContext();
+  return { ipHash: ctx.ipHash, sessionHash: ctx.sessionHash, isBot: ctx.isBot };
+}
+
 export async function trackView(input: {
   path: string;
   wasteTypeId?: string;
